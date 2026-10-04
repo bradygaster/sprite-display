@@ -8,10 +8,10 @@ ESP32-S3-Touch-AMOLED-1.75-B/C:
 - Arduino CLI 1.5.1
 - Espressif Arduino core `esp32:esp32@3.3.10`
 
-The included animation is a deliberately neutral four-frame test marker. It
-exists only to verify sprite timing, transparency, placement, and display
-transfer. The final artwork, animation cadence, background, scaling, and
-interaction model are intentionally deferred.
+The included animation is an original four-frame sugar-skull design with
+color-cycling floral, eye, and cheek accents. It demonstrates sprite timing,
+transparency, placement, scaling, and display transfer without depending on
+external artwork.
 
 ## Repository layout
 
@@ -22,7 +22,7 @@ firmware/SpriteDisplay/
   src/                     Animation, metadata, and rendering modules
   partitions.csv           Custom 16 MB flash layout
 assets/
-  placeholder.ppm          Replaceable source art used by the test sprite
+  placeholder.ppm          Neutral source art retained as a pipeline fixture
 tests/                     Hardware-independent native unit tests
 tools/
   arduino.sh               Pinned firmware build/upload helper
@@ -80,7 +80,7 @@ python3 tools/convert_sprite.py artwork.png \
   --symbol my_sprite_pixels
 ```
 
-Update `firmware/SpriteDisplay/assets/PlaceholderSprite.h` usage in
+Update `firmware/SpriteDisplay/assets/SugarSkullSprite.h` usage in
 `SpriteDisplay.ino`, then set the `SpriteSheet` metadata:
 
 - full sheet dimensions
@@ -90,15 +90,16 @@ Update `firmware/SpriteDisplay/assets/PlaceholderSprite.h` usage in
 - loop behavior
 - optional RGB565 transparent color key
 - top-left placement on the 466x466 display
+- integer nearest-neighbor scale
 
 Large source artwork should live outside `firmware/`; only generated RGB565
 data needed by the device belongs in the sketch. If an animation grows too
 large for compiled flash data, the `SpriteSheet` pixel source is the intended
 extension point for an asset-partition-backed reader.
 
-## Deferred visual design
+## Visual design extension points
 
-This scaffold does not choose the user's final character, art style, frame
-rate, composition, background, scaling policy, touch behavior, or transition
-effects. Those choices can be added without changing the tested timing and
-metadata contracts.
+The current sugar skull is generated from compact, repository-owned C++ shape
+primitives. Its palette, details, frame rate, composition, background, scale,
+touch behavior, and transitions can be changed without altering the tested
+timing and metadata contracts.

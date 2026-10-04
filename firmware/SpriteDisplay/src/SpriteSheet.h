@@ -19,6 +19,7 @@ struct SpriteSheet {
   uint16_t transparentKey = 0;
   int16_t x = 0;
   int16_t y = 0;
+  uint8_t scale = 1;
 };
 
 enum class SpriteSheetError {
@@ -28,6 +29,7 @@ enum class SpriteSheetError {
   EmptyFrame,
   EmptyAnimation,
   EmptyFrameDuration,
+  EmptyScale,
   InvalidGrid,
   FrameCountExceedsSheet,
   PlacementOutOfBounds,

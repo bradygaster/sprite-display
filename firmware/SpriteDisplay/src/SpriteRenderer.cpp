@@ -30,8 +30,15 @@ bool SpriteRenderer::render(const SpriteSheet& sheet, uint16_t frameIndex,
           sheet.pixels[static_cast<size_t>(sourceY + y) * sheet.sheetWidth +
                        sourceX + x];
       if (sheet.hasTransparentKey && pixel == sheet.transparentKey) continue;
-      framebuffer_[static_cast<size_t>(sheet.y + y) * width_ + sheet.x + x] =
-          pixel;
+      const uint16_t destinationX = sheet.x + x * sheet.scale;
+      const uint16_t destinationY = sheet.y + y * sheet.scale;
+      for (uint8_t scaledY = 0; scaledY < sheet.scale; ++scaledY) {
+        std::fill_n(
+            framebuffer_ +
+                static_cast<size_t>(destinationY + scaledY) * width_ +
+                destinationX,
+            sheet.scale, pixel);
+      }
     }
   }
   return true;

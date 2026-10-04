@@ -6,6 +6,7 @@
 #include "../firmware/SpriteDisplay/src/SpriteAnimator.h"
 #include "../firmware/SpriteDisplay/src/SpriteRenderer.h"
 #include "../firmware/SpriteDisplay/src/SpriteSheet.h"
+#include "../firmware/SpriteDisplay/assets/SugarSkullSprite.h"
 
 namespace {
 
@@ -71,6 +72,16 @@ void testValidation() {
              SpriteSheetError::FrameCountExceedsSheet,
          "excess frame count is rejected");
   invalid = sheet;
+  invalid.scale = 0;
+  expect(sprite_display::validateSpriteSheet(invalid, 8, 8) ==
+             SpriteSheetError::EmptyScale,
+         "zero scale is rejected");
+  invalid = sheet;
+  invalid.scale = 4;
+  expect(sprite_display::validateSpriteSheet(invalid, 8, 8) ==
+             SpriteSheetError::PlacementOutOfBounds,
+         "scaled placement is bounds checked");
+  invalid = sheet;
   invalid.x = 7;
   expect(sprite_display::validateSpriteSheet(invalid, 8, 8) ==
              SpriteSheetError::PlacementOutOfBounds,
@@ -98,6 +109,28 @@ void testRendering() {
   expect(renderer.render(sheet, 1, 9), "transparent frame renders");
   expect(framebuffer[1 * 6 + 1] == 9, "transparent key preserves background");
   expect(!renderer.render(sheet, 4), "out-of-range frame is rejected");
+
+  sheet = validSheet(pixels);
+  sheet.scale = 2;
+  expect(renderer.render(sheet, 1, 9), "scaled frame renders");
+  expect(framebuffer[1 * 6 + 1] == 2 && framebuffer[1 * 6 + 2] == 2 &&
+             framebuffer[2 * 6 + 1] == 2 && framebuffer[2 * 6 + 2] == 2,
+         "nearest-neighbor scale expands each source pixel");
+  expect(framebuffer[1 * 6 + 3] == 3 && framebuffer[2 * 6 + 4] == 3,
+         "scaled neighboring pixels remain distinct");
+}
+
+void testSugarSkullAsset() {
+  using namespace sprite_display;
+  expect(kSugarSkullPixels.size() ==
+             static_cast<size_t>(kSugarSkullSheetWidth) *
+                 kSugarSkullSheetHeight,
+         "sugar skull sheet dimensions match its generated pixels");
+  size_t visiblePixels = 0;
+  for (const uint16_t pixel : kSugarSkullPixels) {
+    if (pixel != 0) ++visiblePixels;
+  }
+  expect(visiblePixels > 6000, "sugar skull frames contain visible artwork");
 }
 
 }  // namespace
@@ -106,6 +139,7 @@ int main() {
   testAnimationTiming();
   testValidation();
   testRendering();
+  testSugarSkullAsset();
   if (failures) return EXIT_FAILURE;
   std::cout << "All sprite display tests passed.\n";
   return EXIT_SUCCESS;
