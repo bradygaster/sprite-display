@@ -6,6 +6,7 @@
 #include "../firmware/SpriteDisplay/src/SpriteAnimator.h"
 #include "../firmware/SpriteDisplay/src/SpriteRenderer.h"
 #include "../firmware/SpriteDisplay/src/SpriteSheet.h"
+#include "../firmware/SpriteDisplay/assets/SugarSkullSprite.h"
 
 namespace {
 
@@ -119,12 +120,26 @@ void testRendering() {
          "scaled neighboring pixels remain distinct");
 }
 
+void testSugarSkullAsset() {
+  using namespace sprite_display;
+  expect(kSugarSkullPixels.size() ==
+             static_cast<size_t>(kSugarSkullSheetWidth) *
+                 kSugarSkullSheetHeight,
+         "sugar skull sheet dimensions match its generated pixels");
+  size_t visiblePixels = 0;
+  for (const uint16_t pixel : kSugarSkullPixels) {
+    if (pixel != 0) ++visiblePixels;
+  }
+  expect(visiblePixels > 6000, "sugar skull frames contain visible artwork");
+}
+
 }  // namespace
 
 int main() {
   testAnimationTiming();
   testValidation();
   testRendering();
+  testSugarSkullAsset();
   if (failures) return EXIT_FAILURE;
   std::cout << "All sprite display tests passed.\n";
   return EXIT_SUCCESS;

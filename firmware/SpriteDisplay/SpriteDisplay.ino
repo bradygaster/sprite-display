@@ -5,7 +5,7 @@
 #include <algorithm>
 #include <cstring>
 
-#include "assets/PlaceholderSprite.h"
+#include "assets/SugarSkullSprite.h"
 #include "src/Config.h"
 #include "src/SpriteAnimator.h"
 #include "src/SpriteRenderer.h"
@@ -20,21 +20,21 @@ Arduino_CO5300 display(&displayBus, 39, 0, kDisplayWidth, kDisplayHeight, 6, 0,
                        0, 0);
 
 constexpr size_t kTransferBytes = 16384;
-constexpr uint8_t kSpriteScale = 8;
+constexpr uint8_t kSpriteScale = 4;
 constexpr SpriteSheet kSprite{
-    kPlaceholderPixels,
-    kPlaceholderPixels_width,
-    kPlaceholderPixels_height,
-    8,
-    8,
-    4,
-    4,
-    frameDurationFromFps(4),
+    kSugarSkullPixels.data(),
+    kSugarSkullSheetWidth,
+    kSugarSkullSheetHeight,
+    kSugarSkullFrameWidth,
+    kSugarSkullFrameHeight,
+    kSugarSkullFrameCount,
+    kSugarSkullFramesPerRow,
+    frameDurationFromFps(3),
     true,
     true,
     0x0000,
-    (kDisplayWidth - 8 * kSpriteScale) / 2,
-    (kDisplayHeight - 8 * kSpriteScale) / 2,
+    (kDisplayWidth - kSugarSkullFrameWidth * kSpriteScale) / 2,
+    (kDisplayHeight - kSugarSkullFrameHeight * kSpriteScale) / 2,
     kSpriteScale,
 };
 
