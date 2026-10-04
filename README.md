@@ -90,6 +90,7 @@ Update `firmware/SpriteDisplay/assets/PlaceholderSprite.h` usage in
 - loop behavior
 - optional RGB565 transparent color key
 - top-left placement on the 466x466 display
+- integer nearest-neighbor scale
 
 Large source artwork should live outside `firmware/`; only generated RGB565
 data needed by the device belongs in the sketch. If an animation grows too

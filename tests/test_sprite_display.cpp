@@ -71,6 +71,16 @@ void testValidation() {
              SpriteSheetError::FrameCountExceedsSheet,
          "excess frame count is rejected");
   invalid = sheet;
+  invalid.scale = 0;
+  expect(sprite_display::validateSpriteSheet(invalid, 8, 8) ==
+             SpriteSheetError::EmptyScale,
+         "zero scale is rejected");
+  invalid = sheet;
+  invalid.scale = 4;
+  expect(sprite_display::validateSpriteSheet(invalid, 8, 8) ==
+             SpriteSheetError::PlacementOutOfBounds,
+         "scaled placement is bounds checked");
+  invalid = sheet;
   invalid.x = 7;
   expect(sprite_display::validateSpriteSheet(invalid, 8, 8) ==
              SpriteSheetError::PlacementOutOfBounds,
@@ -98,6 +108,15 @@ void testRendering() {
   expect(renderer.render(sheet, 1, 9), "transparent frame renders");
   expect(framebuffer[1 * 6 + 1] == 9, "transparent key preserves background");
   expect(!renderer.render(sheet, 4), "out-of-range frame is rejected");
+
+  sheet = validSheet(pixels);
+  sheet.scale = 2;
+  expect(renderer.render(sheet, 1, 9), "scaled frame renders");
+  expect(framebuffer[1 * 6 + 1] == 2 && framebuffer[1 * 6 + 2] == 2 &&
+             framebuffer[2 * 6 + 1] == 2 && framebuffer[2 * 6 + 2] == 2,
+         "nearest-neighbor scale expands each source pixel");
+  expect(framebuffer[1 * 6 + 3] == 3 && framebuffer[2 * 6 + 4] == 3,
+         "scaled neighboring pixels remain distinct");
 }
 
 }  // namespace

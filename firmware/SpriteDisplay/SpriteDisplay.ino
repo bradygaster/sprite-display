@@ -20,6 +20,7 @@ Arduino_CO5300 display(&displayBus, 39, 0, kDisplayWidth, kDisplayHeight, 6, 0,
                        0, 0);
 
 constexpr size_t kTransferBytes = 16384;
+constexpr uint8_t kSpriteScale = 8;
 constexpr SpriteSheet kSprite{
     kPlaceholderPixels,
     kPlaceholderPixels_width,
@@ -32,8 +33,9 @@ constexpr SpriteSheet kSprite{
     true,
     true,
     0x0000,
-    (kDisplayWidth - 8) / 2,
-    (kDisplayHeight - 8) / 2,
+    (kDisplayWidth - 8 * kSpriteScale) / 2,
+    (kDisplayHeight - 8 * kSpriteScale) / 2,
+    kSpriteScale,
 };
 
 uint16_t* framebuffer = nullptr;
